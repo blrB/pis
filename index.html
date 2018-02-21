@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>PIS</title>
+    </head>
+    <script src="index.js"></script>
+    <script src="latlon-spherical.js"></script>
+
+    <script type="text/javascript">
+        function test(){
+            var relation = document.getElementById('relation').value;
+            var output = document.getElementById("output");
+            var area = run(relation)
+            area.then(function(answer) {
+                output.innerHTML = "Area = " + answer;
+            })
+        }
+
+    </script>
+
+    <style type="text/css">
+    </style>
+
+<body>
+    <button onclick="test()">Get area of relation</button>
+    <input id="relation" type="text" name="relation" value="[name='Минск']">
+    <div id="output"></div>
+</body> 
+</html> 
