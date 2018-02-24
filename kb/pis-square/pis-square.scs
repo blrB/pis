@@ -1,0 +1,27 @@
+format_pis_square_json
+<- sc_node_not_relation;
+<- format;
+=> nrel_main_idtf: 
+	[формат pis_square (json)]
+	(* 
+	<- lang_ru;;
+	 *);
+=> nrel_main_idtf: 
+	[format pis_square (json)]
+	(* 
+	<- lang_en;;
+	*);
+=> nrel_mimetype:
+	[application/json];;
+
+pis_square_code <- ui_external_languages;
+=> nrel_main_idtf: 
+	[Компонент подсчета площади географических объектов]
+	(* 
+	<- lang_ru;;
+	 *);
+=> nrel_main_idtf: 
+	[Component of geographic area counting]
+	(* 
+	<- lang_en;;
+	*);;
