@@ -1,0 +1,47 @@
+sc_node_norole_relation -> nrel_area;;
+
+nrel_area => nrel_main_idtf:
+	[площадь*] 
+	(* <- lang_ru;; *);
+	[area*]
+	(* <- lang_en;;	*);;
+
+nrel_area => nrel_idtf:
+	[быть площадью*]
+	(* <- lang_ru;; *);;
+
+nrel_area => nrel_idtf:
+	[быть площадью фигуры*] 
+	(* <- lang_ru;; *);;
+
+nrel_area => nrel_idtf:
+	[быть площадью геометрической фигуры*] 
+	(* <- lang_ru;; *);;
+
+nrel_area => nrel_definitional_domain: 
+	...
+	(*
+	<= nrel_combination:
+		{
+		concept_flat_geometric_figure;
+		concept_quantity
+		};;
+	*);;	
+
+nrel_area => nrel_first_domain:
+	concept_flat_geometric_figure;;	
+
+nrel_area => nrel_second_domain: 
+	concept_quantity;;
+
+nrel_area <- relation;;
+nrel_area <- binary_relation;;
+nrel_area <- oriented_relation;;
+nrel_area <- antireflexive_relation;;
+nrel_area <- antisymmetric_relation;;
+nrel_area <- antitransitive_relation;;
+
+nrel_area <=> nrel_analogue: nrel_length;;
+
+
+

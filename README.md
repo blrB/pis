@@ -1,6 +1,6 @@
-# bottle-test-ostis
+# pis-square-ostis
 
-##Install dependency
+## Install dependency
 
 ```sh
 sudo apt-get update
@@ -12,10 +12,10 @@ sudo n stable
 sudo npm install -g grunt-cli
 ```
 
-##Run grunt for building component
+## Run grunt for building component
 
 ```sh
-cd bottle-test-ostis
+cd pis-square
 npm install
 grunt build
 ```

@@ -72,9 +72,56 @@ PisSquare.prototype = {
         return $(this.pisSquareToolsContainer).find('#start-pis-square');
     },
 
+    getAddButton: function () {
+        return $(this.pisSquareToolsContainer).find('#add-pis-square');
+    },
+
     addSquareToNode: function () {
         var self = this;
-        //TODO
+        var nrel_area = PisSquareKeynodesHandler.scKeynodes.nrel_area;
+        var node = this.selectedNode;
+        console.log(`node ${node} nrel_area ${nrel_area}`);
+
+        window.sctpClient.iterate_constr(
+            SctpConstrIter(SctpIteratorType.SCTP_ITERATOR_5F_A_A_A_F,
+                [
+                    parseInt(node),
+                    sc_type_arc_common | sc_type_const,
+                    sc_type_link,
+                    sc_type_arc_pos_const_perm,
+                    nrel_area
+                ],
+                {"area": 2})
+            ).done(function (results) {
+
+                console.log("set area");
+
+                var addrArea = results.get(0, "area");
+                window.sctpClient.set_link_content(addrArea, self.area.toString());
+                SCWeb.core.Main.doDefaultCommand([node]);
+
+            }).fail(function () {
+                console.log("fail find area link");
+
+                q_square_m = PisSquareKeynodesHandler.scKeynodes.q_square_m;
+
+                window.sctpClient.create_link().done(function (link_addr) {
+                    console.log(`create link ${link_addr}`);
+                    window.sctpClient.set_link_content(link_addr, self.area.toString()).done(function () {
+                        console.log(`set area ${self.area} in ${link_addr}`);
+                        window.sctpClient.create_arc(sc_type_arc_common | sc_type_const, node, link_addr).done(function (arc_addr) {
+                            console.log(`create arc ${node} => ${link_addr}`);
+                            window.sctpClient.create_arc(sc_type_arc_pos_const_perm, q_square_m, link_addr).done(function () {
+                                console.log(`create arc ${q_square_m} -> ${link_addr}`);
+                                window.sctpClient.create_arc(sc_type_arc_pos_const_perm, nrel_area, arc_addr).done(function () {
+                                    console.log(`create arc ${nrel_area} -> (${node} => ${link_addr})`);
+                                    SCWeb.core.Main.doDefaultCommand([node]);
+                                });
+                            });
+                        });
+                    });
+                });
+            });
     },
 
     getOutputDiv: function () {
@@ -94,12 +141,19 @@ PisSquare.prototype = {
             console.log("Start overpass");
             var area = self.runOverPass(self.getRequest());
             area.then(function(answer) {
-                self.area = area;
+                self.area = answer;
                 self.getOutputDiv().text(`Площадь равна ${answer} м²`);
+                self.getAddButton().attr("disabled", false);
             }, function(errorMessage) {
                 self.area = null;
                 self.getOutputDiv().text(errorMessage);
+                self.getAddButton().attr("disabled", true);
             })
+        });
+
+        this.getAddButton().click(function () {
+            console.log("add square to node");
+            self.addSquareToNode();
         });
 
         this.getInputParam().click(function () {

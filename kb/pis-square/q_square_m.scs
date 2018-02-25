@@ -1,0 +1,9 @@
+q_square_m <- sc_node_not_relation;;
+
+q_square_m => nrel_main_idtf:
+	[квадратный метр]
+	(* <- lang_ru;; *);
+	[square meter]
+	(* <- lang_en;; *);;
+
+exact_value -> q_square_m;;

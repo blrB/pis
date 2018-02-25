@@ -1,7 +1,8 @@
 PisSquareKeynodesHandler = {
 
     systemIds: [
-        'nrel_main_idtf'
+        'nrel_area',
+        'q_square_m'
     ],
 
     scKeynodes: {},
