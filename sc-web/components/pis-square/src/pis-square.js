@@ -141,8 +141,13 @@ PisSquare.prototype = {
             console.log("Start overpass");
             var area = self.runOverPass(self.getRequest());
             area.then(function(answer) {
-                self.area = answer;
-                self.getOutputDiv().text(`Площадь равна ${answer} м²`);
+                self.area = answer.area;
+
+                var text = `<p>Площадь равна ${answer.area} м²</p>`;
+                answer.polygonInfo.forEach((el, index) => {
+                    text += `<p>Контур ${index + 1}: периметр - ${el.perimeter} м, площадь - ${el.area} м²</p>`
+                });
+                self.getOutputDiv().html(text);
                 self.getAddButton().attr("disabled", false);
             }, function(errorMessage) {
                 self.area = null;
@@ -233,7 +238,7 @@ PisSquare.prototype = {
     runOverPass: function (relation) {
         var self = this;
         var promise = new Promise(function (resolve, reject) {
-            console.log("[out:json][timeout:15];(relation" + relation + ";>;);out;")
+            console.log("[out:json][timeout:15];(relation" + relation + ";>;);out;");
             var fetchPromise = fetch("http://overpass-api.de/api/interpreter?data=[out:json][timeout:15];(relation" + relation + ";>;);out;");
             jsonPromise = fetchPromise.then(function (response) {
                 return response.json();
@@ -242,13 +247,29 @@ PisSquare.prototype = {
                 var sumArea = 0;
                 var osm3sObjects = self.createOsm3sObjects(json);
                 var polygons = self.createPolygons(osm3sObjects);
+                var polygonInfo = [];
                 polygons.forEach((polygon) => {
                     var area = LatLon.areaOf(polygon);
                     console.log("Area = " + area);
+                    var perimeter = 0;
+                    polygon.forEach((el, index) => {
+                        var next = polygon[(index + 1) % polygon.length];
+                        perimeter += el.distanceTo(next);
+                    });
+                    console.log("Perimeter = " + perimeter);
                     sumArea += area;
-                })
-                ;
-                resolve(sumArea)
+                    polygonInfo.push({
+                        polygon: polygon,
+                        area: area,
+                        perimeter: perimeter
+                    })
+                });
+                var answer = {
+                    area: sumArea,
+                    polygonInfo: polygonInfo,
+                    relation: relation
+                };
+                resolve(answer)
             });
         });
         return promise;
